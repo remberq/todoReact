@@ -1,7 +1,10 @@
 import './button.css'
-const Button = ({classes = '', text, destroy}) => {
+
+const Button = ({ classes = '', text, destroy }) => {
   return (
-    <button className={`icon ${classes}`} onClick={destroy}>{ text ? text : '' }</button>
+    <button className={`icon ${classes}`} onClick={destroy}>
+      {text ? text : ''}
+    </button>
   )
 }
 
