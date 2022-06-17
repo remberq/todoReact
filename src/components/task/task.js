@@ -20,4 +20,6 @@ const Task = ({ task, onClickedTask, completeTask }) => {
   )
 }
 
+let name = 'ad'
+
 export default Task
