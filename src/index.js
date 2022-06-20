@@ -1,34 +1,22 @@
 import { createRoot } from 'react-dom/client'
 import { useState } from 'react'
-import { formatDistance } from 'date-fns'
 
 import Header from './components/header/header'
 import Footer from './components/footer/footer'
 import TaskList from './components/task-list/task-list'
-
 import './index.css'
+import { addNewTask } from './logic/newTaskAdd'
+import { useTask } from './logic/taskData'
+import { filterTask } from './logic/filterTask'
+import { checkboxChange } from './logic/changeStatus'
+import { countTask } from './logic/countActiveTask'
 
 const App = () => {
-  const [task, setTask] = useState([addNewTask('Drink'), addNewTask('Eat'), addNewTask('Sleep'), addNewTask('Walk')])
-
+  const [task, setTask] = useTask()
   const [stage, setStage] = useState({
     // This state need to control which button is active in footer buttons
     status: 'All',
   })
-
-  function randomDate(addNewTask) {
-    const dateCreated = addNewTask ? Date.now() : new Date(Date.now() - Math.floor(Math.random() * 10000000))
-    return formatDistance(dateCreated, Date.now(), { includeSeconds: true, addSuffix: true })
-  }
-
-  function addNewTask(title, isNewTask) {
-    return {
-      title,
-      id: Math.floor(Math.random() * 1000),
-      created: randomDate(isNewTask),
-      active: true,
-    }
-  }
 
   function addTask(item) {
     // Add new task
@@ -40,43 +28,25 @@ const App = () => {
     setTask(task.filter((item) => item.id !== id))
   }
 
-  const changeStatus = (id) => {
-    // Toggle status when clicked on input checkbox
-    const newData = [...task].reduce((acc, item) => {
-      if (item.id === id) {
-        item.active = !item.active
-      }
-      return [...acc, item]
-    }, [])
-    setTask(newData)
-  }
-
-  function filterTask(status) {
-    if (status === 'Active') {
-      return task.filter((item) => item.active)
-    } else if (status === 'Completed') {
-      return task.filter((item) => !item.active)
-    }
-    return task
-  }
-
   function destroyCompletedTask() {
     // Clear all completed task by click Clear Completed button
     setTask(task.filter((item) => item.active))
   }
 
-  const newTask = filterTask(stage.status) // Filter task data when click on footer buttons All, Active, Completed
-
-  const count = [...task].filter((item) => item.active).length // How much active task count
+  const newTask = filterTask(stage.status, task) // Filter task data when click on footer buttons All, Active, Completed
 
   return (
     <section className={'todoapp'}>
       <Header addNewTask={(title, newTask) => addTask(addNewTask(title, newTask))} />
       <section className={'main'}>
-        {task.length ? <TaskList task={newTask} onRemove={removeTask} completeTask={changeStatus} /> : <p>Task End</p>}
+        {task.length ? (
+          <TaskList task={newTask} onRemove={removeTask} completeTask={(id) => setTask(checkboxChange(task, id))} />
+        ) : (
+          <p>Task End</p>
+        )}
       </section>
       <Footer
-        count={count}
+        count={countTask(task)}
         filterTask={(text) => setStage({ status: text })}
         destroyAllComplete={destroyCompletedTask}
       />
