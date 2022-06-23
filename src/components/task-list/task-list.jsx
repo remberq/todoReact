@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types'
 
 import Task from '../task/task'
+
 import './task-list.css'
 
-const TaskList = ({ task, onRemove, completeTask }) => {
+const TaskList = ({ task, completeTask, onRemove }) => {
   return (
     <ul className={'todo-list'}>
       {task.map((item) => {
-        return <Task key={item.id} task={item} onClickedTask={() => onRemove(item.id)} completeTask={completeTask} />
+        return <Task key={item.id} onClickedTask={() => onRemove(item.id)} task={item} completeTask={completeTask} />
       })}
     </ul>
   )

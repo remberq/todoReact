@@ -1,15 +1,11 @@
-import { createRoot } from 'react-dom/client'
 import { useState } from 'react'
 
-import Header from './components/header/header'
-import Footer from './components/footer/footer'
-import TaskList from './components/task-list/task-list'
-import './index.css'
-import { addNewTask } from './logic/newTaskAdd'
-import { useTask } from './logic/taskData'
-import { filterTask } from './logic/filterTask'
-import { checkboxChange } from './logic/changeStatus'
-import { countTask } from './logic/countActiveTask'
+import Header from '../header/header'
+import Footer from '../footer/footer'
+import TaskList from '../task-list/task-list'
+import { countTask, checkboxChange, filterTask, useTask, addNewTask } from '../../logic/index'
+
+import './app.css'
 
 const App = () => {
   const [task, setTask] = useTask()
@@ -42,7 +38,7 @@ const App = () => {
         {task.length ? (
           <TaskList task={newTask} onRemove={removeTask} completeTask={(id) => setTask(checkboxChange(task, id))} />
         ) : (
-          <p>Task End</p>
+          <p className={'end-task'}>Task End</p>
         )}
       </section>
       <Footer
@@ -54,6 +50,4 @@ const App = () => {
   )
 }
 
-const container = document.querySelector('#root')
-const root = createRoot(container)
-root.render(<App />)
+export { App }
